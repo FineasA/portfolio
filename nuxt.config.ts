@@ -28,7 +28,8 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
-    }
+    },
+    pageTransition: { name: 'page', mode: 'out-in' }
   },
 
   build: {
@@ -39,18 +40,6 @@ export default defineNuxtConfig({
   error: {
     statusCode: 404,
     message: "Sorry, we couldn't find the page you're looking for."
-  },
-
-  // Global error handling
-  vue: {
-    config: {
-      errorHandler: (err: any) => {
-        console.error('Global error:', err)
-      },
-      warnHandler: (msg: any) => {
-        console.warn('Global warning:', msg)
-      }
-    }
   },
 
   compatibilityDate: '2025-01-28'
