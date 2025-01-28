@@ -2,7 +2,6 @@
   <div class="min-h-screen bg-rs-brown dark:bg-rs-interface-dark text-rs-scroll overflow-x-hidden font-runescape" :class="{ 'hide-scrollbar': isLoading }">
     <LoadingScreen :is-loading="isLoading" />
     <ThemeToggle />
-    <MouseAura />
     <NuxtPage />
   </div>
 </template>
@@ -19,7 +18,6 @@
 
 html {
   scroll-behavior: smooth;
-  cursor: none;
   overflow-x: hidden;
   @apply bg-rs-brown dark:bg-rs-interface-dark;
 }
@@ -104,18 +102,5 @@ onMounted(() => {
   setTimeout(() => {
     hide()
   }, 1500)
-
-  // Create custom cursor
-  const cursor = document.createElement('div')
-  cursor.classList.add('custom-cursor')
-  document.body.appendChild(cursor)
-
-  const updateCursor = (e: MouseEvent) => {
-    if (!cursor) return
-    cursor.style.left = e.clientX - 8 + 'px'
-    cursor.style.top = e.clientY - 8 + 'px'
-  }
-
-  document.addEventListener('mousemove', updateCursor)
 })
 </script>

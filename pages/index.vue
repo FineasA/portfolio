@@ -41,23 +41,23 @@
       <!-- Hero Content -->
       <div class="relative z-10 min-h-screen flex items-center justify-center px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-6xl font-bold mb-6 text-primary dark:text-primary-light hover:scale-105 transition-transform cursor-none">
+            <h1 class="text-6xl font-bold mb-6 text-primary dark:text-primary-light hover:scale-105 transition-transform">
               Hi, I'm Fineas
             </h1>
-            <p class="text-xl mb-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-none">
+            <p class="text-xl mb-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
               Welcome to my digital playground. I craft exceptional digital experiences
               with a focus on innovation and user experience.
             </p>
             <div class="flex gap-4 justify-center">
               <button
                 @click="scrollToSection('about')"
-                class="px-6 py-3 bg-primary text-white hover:bg-primary-light rounded-lg transition-all duration-300 hover:scale-105 cursor-none"
+                class="px-6 py-3 bg-primary text-white hover:bg-primary-light rounded-lg transition-all duration-300 hover:scale-105"
               >
                 About Me
               </button>
               <button
                 @click="scrollToSection('projects')"
-                class="px-6 py-3 border border-wood text-wood hover:bg-wood hover:text-white rounded-lg transition-all duration-300 hover:scale-105 cursor-none"
+                class="px-6 py-3 border border-wood text-wood hover:bg-wood hover:text-white rounded-lg transition-all duration-300 hover:scale-105"
               >
                 View Projects
               </button>
@@ -266,7 +266,7 @@
                 <button
                   type="submit"
                   :disabled="isSubmitting"
-                  class="w-full px-6 py-3 bg-primary/90 hover:bg-primary text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all duration-300 hover:scale-[1.02] cursor-none flex items-center justify-center gap-2 shadow-lg"
+                  class="w-full px-6 py-3 bg-primary/90 hover:bg-primary text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg"
                 >
                   <span v-if="isSubmitting">Sending...</span>
                   <span v-else>Send Message</span>
@@ -663,4 +663,14 @@ onMounted(() => {
     timelineObserver.observe(item)
   })
 })
-</script> 
+</script>
+
+<style>
+* {
+  cursor: default;
+}
+
+a, button {
+  cursor: pointer;
+}
+</style> 
