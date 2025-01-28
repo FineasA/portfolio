@@ -75,19 +75,6 @@ body {
 :root:has(.hide-scrollbar) body {
   overflow: hidden !important;
 }
-
-/* Custom cursor - RuneScape style */
-.custom-cursor {
-  @apply w-4 h-4 fixed pointer-events-none z-50;
-  background-image: url('/cursors/rs-cursor.png');
-  background-size: contain;
-  mix-blend-mode: normal;
-  image-rendering: pixelated;
-}
-
-.custom-cursor.interact {
-  background-image: url('/cursors/rs-cursor-interact.png');
-}
 </style>
 
 <script setup lang="ts">

@@ -5,49 +5,35 @@
       <!-- 3D Background -->
       <div class="absolute inset-0 z-0">
         <TresCanvas alpha>
-          <TresPerspectiveCamera :position="[0, 0, 7]" :fov="45" />
+          <TresPerspectiveCamera :position="[0, 2, 10]" :fov="45" />
           <TresScene>
-            <!-- Outer wireframe cube -->
-            <TresMesh :rotation="[rotationX, rotationY, 0]" :position="[0, 0, 0]" :scale="[scale * 1.15, scale * 1.15, scale * 1.15]">
-              <TresBoxGeometry :args="[2, 2, 2]" />
+            <!-- Floating Rocks -->
+            <TresMesh v-for="(rock, index) in rocks" :key="index"
+              :position="[rock.x, rock.y, rock.z]"
+              :rotation="[rock.rotationX, rock.rotationY, rock.rotationZ]"
+              :scale="[rock.scale, rock.scale, rock.scale]">
+              <TresCylinderGeometry :args="[1, 1, 0.2, 32]" />
               <TresMeshPhysicalMaterial
-                :color="0x5F7161"
-                :metalness="0.5"
-                :roughness="0.2"
-                :wireframe="true"
-                :wireframeLinewidth="1.5"
-                :opacity="0.8"
-                :clearcoat="1.0"
-                :clearcoatRoughness="0.1"
-                :transmission="0.2"
-                transparent
-              />
-            </TresMesh>
-            
-            <!-- Inner glowing cube -->
-            <TresMesh :rotation="[rotationX, rotationY, 0]" :position="[0, 0, 0]" :scale="[innerScale * 1.15, innerScale * 1.15, innerScale * 1.15]">
-              <TresBoxGeometry :args="[1.4, 1.4, 1.4]" />
-              <TresMeshPhysicalMaterial
-                :color="0xD7C0AE"
-                :metalness="0.7"
-                :roughness="0.2"
-                :opacity="0.6"
+                :color="0xD3D3D3"
+                :metalness="0.3"
+                :roughness="0.7"
                 :clearcoat="0.5"
-                :clearcoatRoughness="0.3"
-                :transmission="0.4"
-                :ior="1.5"
-                :reflectivity="1"
-                :emissive="0x6D8B74"
-                :emissiveIntensity="0.3"
-                transparent
+                :clearcoatRoughness="0.4"
+                :transmission="0.0"
+                :opacity="1"
+                :reflectivity="0.2"
+                :emissive="0x808080"
+                :emissiveIntensity="0.1"
+                :map="rock.texture"
+                :alphaTest="0.5"
               />
             </TresMesh>
 
             <!-- Lighting -->
             <TresAmbientLight :intensity="0.4" />
-            <TresDirectionalLight :position="[5, 5, 5]" :intensity="0.7" :color="0xFFF1DC" />
-            <TresDirectionalLight :position="[-5, -5, -5]" :intensity="0.3" :color="0x6D8B74" />
-            <TresPointLight :position="[0, 3, 0]" :intensity="0.2" :distance="10" :decay="2" :color="0xEFEFD8" />
+            <TresDirectionalLight :position="[5, 5, 5]" :intensity="0.7" :color="0xFFA500" />
+            <TresDirectionalLight :position="[-5, -5, -5]" :intensity="0.3" :color="0x4A4A4A" />
+            <TresPointLight :position="[0, 3, 0]" :intensity="0.4" :distance="10" :decay="2" :color="0xFFA500" />
           </TresScene>
         </TresCanvas>
       </div>
@@ -440,25 +426,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRafFn } from '@vueuse/core'
+import { TextureLoader, Texture } from 'three'
 
-const rotationX = ref(0)
-const rotationY = ref(0)
-const scale = ref(1)
-const innerScale = ref(1)
-let time = 0
-
-const technologies = [
-  'JavaScript',
-  'HTML',
-  'CSS',
-  'Web Development',
-  'RESTful APIs',
-  'Serverless Architecture',
-  'Microservices',
-  'Database Management',
-  'Cloud Infrastructure',
-  'Version Control'
-]
+// Define interfaces
+interface Rock {
+  x: number
+  y: number
+  z: number
+  rotationX: number
+  rotationY: number
+  rotationZ: number
+  scale: number
+  baseY: number
+  phase: number
+  rotationSpeed: number
+  texture: Texture | null
+}
 
 interface Experience {
   title: string
@@ -469,6 +452,72 @@ interface Experience {
   isVisible: boolean
 }
 
+// Create floating rocks
+const rocks = ref<Rock[]>([])
+
+// Define rune textures
+const runeTextures = [
+  '/images/runes/water_rune_256px.ico',
+  '/images/runes/blood_rune_256px.ico',
+  '/images/runes/mind_rune_256px.ico',
+  '/images/runes/fire_rune_256px.ico',
+  '/images/runes/law_rune_256px.ico'
+]
+
+// Define rune colors for matching rocks
+const runeColors = [
+  0x4444FF, // Water rune - blue
+  0x990000, // Blood rune - dark red
+  0x8844FF, // Mind rune - purple
+  0xFF4400, // Fire rune - orange-red
+  0xFFFFFF  // Law rune - white
+]
+
+let time = 0
+
+// Initialize 3D objects on client side only
+onMounted(() => {
+  // Load textures first
+  const textureLoader = new TextureLoader()
+  const loadedTextures = runeTextures.map(path => textureLoader.load(path))
+
+  // Initialize rocks with textures
+  rocks.value = Array.from({ length: 5 }, (_, i) => ({
+    x: (Math.random() - 0.5) * 8,
+    y: Math.random() * 4,
+    z: (Math.random() - 0.5) * 3,
+    rotationX: Math.random() * Math.PI,
+    rotationY: Math.random() * Math.PI,
+    rotationZ: Math.random() * Math.PI,
+    scale: 0.5 + Math.random() * 0.2,
+    baseY: 0,
+    phase: Math.random() * Math.PI * 2,
+    rotationSpeed: (Math.random() * 0.003) + 0.001,
+    texture: loadedTextures[i]
+  }))
+
+  // Start animation
+  useRafFn(() => {
+    time += 0.01
+    
+    // Animate rocks
+    rocks.value.forEach((rock) => {
+      if (rock.baseY === 0) {
+        rock.baseY = rock.y
+      }
+      
+      // Floating animation with varying heights
+      rock.y = rock.baseY + Math.sin(time + rock.phase) * 0.3
+      
+      // Smooth rotation animation
+      rock.rotationX += rock.rotationSpeed
+      rock.rotationY += rock.rotationSpeed
+      rock.rotationZ += rock.rotationSpeed * 0.7
+    })
+  })
+})
+
+// Initialize experiences with default values
 const experiences = ref<Experience[]>([
   {
     title: 'Senior Frontend Developer',
@@ -496,14 +545,7 @@ const experiences = ref<Experience[]>([
   }
 ])
 
-const skills = [
-  { name: 'Frontend Development', level: 95 },
-  { name: '3D Graphics & Animation', level: 85 },
-  { name: 'UI/UX Design', level: 90 },
-  { name: 'Backend Development', level: 80 },
-  { name: 'DevOps & Deployment', level: 75 }
-]
-
+// Initialize form data with empty values
 const formData = ref({
   name: '',
   email: '',
@@ -515,6 +557,29 @@ const formStatus = ref({
   message: '',
   type: 'success'
 })
+
+// Initialize skills with default values
+const skills = [
+  { name: 'Frontend Development', level: 95 },
+  { name: '3D Graphics & Animation', level: 85 },
+  { name: 'UI/UX Design', level: 90 },
+  { name: 'Backend Development', level: 80 },
+  { name: 'DevOps & Deployment', level: 75 }
+]
+
+// Initialize technologies
+const technologies = [
+  'JavaScript',
+  'HTML',
+  'CSS',
+  'Web Development',
+  'RESTful APIs',
+  'Serverless Architecture',
+  'Microservices',
+  'Database Management',
+  'Cloud Infrastructure',
+  'Version Control'
+]
 
 const handleSubmit = async () => {
   try {
@@ -597,15 +662,5 @@ onMounted(() => {
     item.setAttribute('data-index', index.toString())
     timelineObserver.observe(item)
   })
-})
-
-useRafFn(() => {
-  time += 0.01
-  rotationX.value += 0.004
-  rotationY.value += 0.004
-  
-  // Slightly more pronounced breathing effect
-  scale.value = 1 + Math.sin(time) * 0.08
-  innerScale.value = 1 + Math.cos(time) * 0.12
 })
 </script> 
