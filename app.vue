@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background dark:bg-background-dark text-gray-100 overflow-x-hidden" :class="{ 'hide-scrollbar': isLoading }">
+  <div class="min-h-screen bg-rs-brown dark:bg-rs-interface-dark text-rs-scroll overflow-x-hidden font-runescape" :class="{ 'hide-scrollbar': isLoading }">
     <LoadingScreen :is-loading="isLoading" />
     <ThemeToggle />
     <MouseAura />
@@ -8,17 +8,51 @@
 </template>
 
 <style>
+@font-face {
+  font-family: 'RuneScape';
+  src: url('/fonts/RuneScape-UF.woff2') format('woff2'),
+       url('/fonts/RuneScape-UF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html {
   scroll-behavior: smooth;
   cursor: none;
   overflow-x: hidden;
+  @apply bg-rs-brown dark:bg-rs-interface-dark;
 }
 
 body {
-  @apply bg-background dark:bg-background-dark;
+  @apply bg-rs-brown dark:bg-rs-interface-dark;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  image-rendering: pixelated;
+}
+
+/* RuneScape-style buttons */
+.rs-button {
+  @apply bg-rs-interface border-2 border-rs-interface-light shadow-rs 
+         hover:bg-rs-interface-dark hover:border-rs-gold 
+         text-rs-scroll px-4 py-2 cursor-pointer 
+         transition-colors duration-200;
+}
+
+/* RuneScape-style text effects */
+.rs-chat {
+  @apply text-rs-chat;
+}
+
+.rs-examine {
+  @apply text-rs-examine italic;
+}
+
+/* RuneScape-style panels */
+.rs-panel {
+  @apply bg-rs-interface border-3 border-rs-interface-light 
+         shadow-rs p-4 rounded-sm;
 }
 
 /* Hide scrollbar styles */
@@ -42,10 +76,17 @@ body {
   overflow: hidden !important;
 }
 
-/* Custom cursor */
+/* Custom cursor - RuneScape style */
 .custom-cursor {
-  @apply w-4 h-4 border-2 border-primary rounded-full fixed pointer-events-none z-50;
-  mix-blend-mode: difference;
+  @apply w-4 h-4 fixed pointer-events-none z-50;
+  background-image: url('/cursors/rs-cursor.png');
+  background-size: contain;
+  mix-blend-mode: normal;
+  image-rendering: pixelated;
+}
+
+.custom-cursor.interact {
+  background-image: url('/cursors/rs-cursor-interact.png');
 }
 </style>
 
