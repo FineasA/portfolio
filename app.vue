@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background dark:bg-background-dark text-gray-100 overflow-x-hidden">
+  <div class="min-h-screen bg-background dark:bg-background-dark text-gray-100 overflow-x-hidden" :class="{ 'hide-scrollbar': isLoading }">
     <LoadingScreen :is-loading="isLoading" />
     <ThemeToggle />
     <MouseAura />
@@ -21,6 +21,27 @@ body {
   overflow-x: hidden;
 }
 
+/* Hide scrollbar styles */
+.hide-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  overflow: hidden !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+:root:has(.hide-scrollbar) {
+  overflow: hidden !important;
+}
+
+:root:has(.hide-scrollbar) body {
+  overflow: hidden !important;
+}
+
 /* Custom cursor */
 .custom-cursor {
   @apply w-4 h-4 border-2 border-primary rounded-full fixed pointer-events-none z-50;
@@ -38,8 +59,10 @@ const { isLoading, hide } = useLoading()
 if (process.client) {
   watch(isLoading, (value) => {
     if (value) {
+      document.documentElement.setAttribute('data-loading', 'true')
       document.body.style.overflow = 'hidden'
     } else {
+      document.documentElement.setAttribute('data-loading', 'false')
       document.body.style.overflow = ''
     }
   })
