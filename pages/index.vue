@@ -12,7 +12,7 @@
               :position="[rock.x, rock.y, rock.z]"
               :rotation="[rock.rotationX, rock.rotationY, rock.rotationZ]"
               :scale="[rock.scale, rock.scale, rock.scale]">
-              <TresCylinderGeometry :args="[1, 1, 0.2, 32]" />
+              <TresCylinderGeometry :args="[1.1, 1.1, 0.15, 64]" />
               <TresMeshPhysicalMaterial
                 :color="0xD3D3D3"
                 :metalness="0.3"
@@ -25,7 +25,7 @@
                 :emissive="0x808080"
                 :emissiveIntensity="0.1"
                 :map="rock.texture"
-                :alphaTest="0.5"
+                :alphaTest="0.1"
               />
             </TresMesh>
 
